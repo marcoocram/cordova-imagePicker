@@ -139,8 +139,8 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
         maxImageCount = maxImages;
 		
 		// get the value for the loadingbox description and height 
-		title = getIntent().getIntExtra(LOADING_BOX_TITLE, 0);
-		description = getIntent().getIntExtra(LOADING_BOX_DESCRIPTION, 0);
+		title = getIntent().getStringExtra(LOADING_BOX_TITLE.toString());
+		description = getIntent().getStringExtra(LOADING_BOX_DESCRIPTION.toString());
 
         Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();
