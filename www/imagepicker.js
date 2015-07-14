@@ -32,7 +32,7 @@ ImagePicker.prototype.getPictures = function(success, fail, options) {
 		height: options.height ? options.height : 0,
 		quality: options.quality ? options.quality : 100,
 		title: options.title ? options.title : 'Processing Images',
-		description: options.description : 'This may take a few moments';
+		description: options.description ? options.description : 'This may take a few moments';
 	};
 
 	return cordova.exec(success, fail, "ImagePicker", "getPictures", [params]);
