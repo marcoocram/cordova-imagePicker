@@ -86,6 +86,10 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
     public static final String WIDTH_KEY = "WIDTH";
     public static final String HEIGHT_KEY = "HEIGHT";
     public static final String QUALITY_KEY = "QUALITY";
+	
+	// we add 2 more variables for the title and description localization, will be used for messages and 
+	public static final String LOADING_BOX_TITLE = "TITLE";
+	public static final String LOADING_BOX_DESCRIPTION = "DESCRIPTION"
 
     private ImageAdapter ia;
 
@@ -106,6 +110,9 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
     private int desiredWidth;
     private int desiredHeight;
     private int quality;
+	
+	private String title;
+	private String description;
 
     private GridView gridView;
 
@@ -130,6 +137,10 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
         desiredHeight = getIntent().getIntExtra(HEIGHT_KEY, 0);
         quality = getIntent().getIntExtra(QUALITY_KEY, 0);
         maxImageCount = maxImages;
+		
+		// get the value for the loadingbox description and height 
+		title = getIntent().getIntExtra(LOADING_BOX_TITLE, 0);
+		description = getIntent().getIntExtra(LOADING_BOX_DESCRIPTION, 0);
 
         Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();
@@ -173,10 +184,9 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
         setupHeader();
         updateAcceptButton();
         
-		// remove this code, this method show the loading dialogbox
-		//progress = new ProgressDialog(this);
-        //progress.setTitle("Processing Images");
-        //progress.setMessage("This may take a few moments");
+		progress = new ProgressDialog(this);
+        progress.setTitle(title);
+        progress.setMessage(description);
     }
     
     @Override
