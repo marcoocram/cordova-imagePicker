@@ -111,7 +111,7 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
 
     private final ImageFetcher fetcher = new ImageFetcher();
 
-    private int selectedColor = 0xff32b2e1;
+    private int selectedColor = 0xff32b2e1; 
     private boolean shouldRequestThumb = true;
     
     private FakeR fakeR;
@@ -172,9 +172,11 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
         getLoaderManager().initLoader(CURSORLOADER_REAL, null, this);
         setupHeader();
         updateAcceptButton();
-        progress = new ProgressDialog(this);
-        progress.setTitle("Processing Images");
-        progress.setMessage("This may take a few moments");
+        
+		// remove this code, this method show the loading dialogbox
+		//progress = new ProgressDialog(this);
+        //progress.setTitle("Processing Images");
+        //progress.setMessage("This may take a few moments");
     }
     
     @Override
