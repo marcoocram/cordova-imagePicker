@@ -89,7 +89,7 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
 	
 	// we add 2 more variables for the title and description localization, will be used for messages and 
 	public static final String LOADING_BOX_TITLE = "TITLE";
-	public static final String LOADING_BOX_DESCRIPTION = "DESCRIPTION"
+	public static final String LOADING_BOX_DESCRIPTION = "DESCRIPTION";
 
     private ImageAdapter ia;
 
