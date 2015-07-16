@@ -62,7 +62,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
+// import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -77,9 +77,11 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.apache.cordova.LOG;
+
 public class MultiImageChooserActivity extends Activity implements OnItemClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "ImagePicker";
+    private static final String LOG_TAG = "ImagePicker";
 
     public static final int NOLIMIT = -1;
     public static final String MAX_IMAGES_KEY = "MAX_IMAGES";
@@ -490,7 +492,6 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
         }
     }
     
-    
     private class ResizeImagesTask extends AsyncTask<Set<Entry<String, Integer>>, Void, ArrayList<String>> {
         private Exception asyncTaskError = null;
 
@@ -531,26 +532,31 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
 
                         file = this.storeImage(bmp, file.getName());
                     }
-                    // Don't do anything if we don't want to resize the image.
-                    /* else {
-                        try {
-                            bmp = this.tryToGetBitmap(file, null, rotate, false);
-                        } catch(OutOfMemoryError e) {
-                            options = new BitmapFactory.Options();
-                            options.inSampleSize = 2;
-                            try {
-                                bmp = this.tryToGetBitmap(file, options, rotate, false);
-                            } catch(OutOfMemoryError e2) {
-                                options = new BitmapFactory.Options();
-                                options.inSampleSize = 4;
-                                try {
-                                    bmp = this.tryToGetBitmap(file, options, rotate, false);
-                                } catch (OutOfMemoryError e3) {
-                                    throw new IOException("Unable to load image into memory.");
-                                }
-                            }
-                        }
-                    } */
+                    else {
+						// Don't load the bitmap if we don't want to resize the image, simply copy the file.
+						/*
+							try {
+								bmp = this.tryToGetBitmap(file, null, rotate, false);
+							} catch(OutOfMemoryError e) {
+								options = new BitmapFactory.Options();
+								options.inSampleSize = 2;
+								try {
+									bmp = this.tryToGetBitmap(file, options, rotate, false);
+								} catch(OutOfMemoryError e2) {
+									options = new BitmapFactory.Options();
+									options.inSampleSize = 4;
+									try {
+										bmp = this.tryToGetBitmap(file, options, rotate, false);
+									} catch (OutOfMemoryError e3) {
+										throw new IOException("Unable to load image into memory.");
+									}
+								}
+							}
+						*/
+						File tempFile = this.createTempFile(file.getName());
+						this.copyFile(file, tempFile);
+						file = tempFile;
+                    }
 
                     al.add(Uri.fromFile(file).toString());
                 }
@@ -596,6 +602,67 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
             finish();
         }
 
+		private void copyFile(File sourceFile, File destFile) {
+			try {
+				if (!sourceFile.exists()) {
+					LOG.d(LOG_TAG, "Source file does not exist!");
+					return;
+				}
+				
+				if (!destFile.exists()) {
+					destFile.createNewFile();
+				}
+
+				LOG.d(LOG_TAG, "Source file exists");
+				FileChannel source = null;
+				FileChannel destination = null;
+				source = new FileInputStream(sourceFile).getChannel();
+				destination = new FileOutputStream(destFile).getChannel();
+				if (destination != null && source != null) {
+					LOG.d(LOG_TAG, "Copying file...");
+					destination.transferFrom(source, 0, source.size());
+					LOG.d(LOG_TAG, "File copied");
+				}
+				if (source != null) {
+					LOG.d(LOG_TAG, "Closing source");
+					source.close();
+				}
+				if (destination != null) {
+					LOG.d(LOG_TAG, "Closing destination");
+					destination.close();
+				}
+			} catch (IOException e) {
+				LOG.e(LOG_TAG, "Error copying the file: " + e.toString());
+			}
+		}
+
+/*		
+		private String getTempDirectoryPath() {
+			File cache = null;
+
+			// SD Card Mounted
+			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+				cache = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +
+						"/Android/data/" + cordova.getActivity().getPackageName() + "/cache/");
+			}
+			// Use internal storage
+			else {
+				cache = cordova.getActivity().getCacheDir();
+			}
+
+			// Create the cache directory if it doesn't exist
+			cache.mkdirs();
+			return cache.getAbsolutePath();
+		}
+*/
+
+		private String createTempFile(String fileName) {
+			int index = fileName.lastIndexOf('.');
+			String name = fileName.substring(0, index);
+			String ext = fileName.substring(index);
+			return File.createTempFile(name, ext);
+		}
+		
         private Bitmap tryToGetBitmap(File file, BitmapFactory.Options options, int rotate, boolean shouldScale) throws IOException, OutOfMemoryError {
             Bitmap bmp;
             if (options == null) {
@@ -628,10 +695,7 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
         * Copyright (C) 2012, webXells GmbH All Rights Reserved.
         */
         private File storeImage(Bitmap bmp, String fileName) throws IOException {
-            int index = fileName.lastIndexOf('.');
-            String name = fileName.substring(0, index);
-            String ext = fileName.substring(index);
-            File file = File.createTempFile(name, ext);
+            File file = this.createTempFile(fileName);
             OutputStream outStream = new FileOutputStream(file);
             if (ext.compareToIgnoreCase(".png") == 0) {
                 bmp.compress(Bitmap.CompressFormat.PNG, quality, outStream);
