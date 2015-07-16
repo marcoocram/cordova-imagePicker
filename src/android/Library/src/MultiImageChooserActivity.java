@@ -78,6 +78,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.apache.cordova.LOG;
+import java.nio.channels.FileChannel;
+import java.io.FileInputStream;
+
 
 public class MultiImageChooserActivity extends Activity implements OnItemClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -656,7 +659,7 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
 		}
 */
 
-		private String createTempFile(String fileName) {
+		private File createTempFile(String fileName) {
 			int index = fileName.lastIndexOf('.');
 			String name = fileName.substring(0, index);
 			String ext = fileName.substring(index);
@@ -697,6 +700,9 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
         private File storeImage(Bitmap bmp, String fileName) throws IOException {
             File file = this.createTempFile(fileName);
             OutputStream outStream = new FileOutputStream(file);
+
+			int index = fileName.lastIndexOf('.');
+			String ext = fileName.substring(index);
             if (ext.compareToIgnoreCase(".png") == 0) {
                 bmp.compress(Bitmap.CompressFormat.PNG, quality, outStream);
             } else {
