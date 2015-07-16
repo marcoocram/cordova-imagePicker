@@ -183,7 +183,7 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
         setupHeader();
         updateAcceptButton();
         
-		progress = new ProgressDialog(this);
+        progress = new ProgressDialog(this);
         progress.setTitle(title);
         progress.setMessage(description);
     }
@@ -528,7 +528,9 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
                                 throw new IOException("Unable to load image into memory.");
                             }
                         }
-                    } else {
+                    }
+                    // Don't do anything if we don't want to resize the image.
+                    /* else {
                         try {
                             bmp = this.tryToGetBitmap(file, null, rotate, false);
                         } catch(OutOfMemoryError e) {
@@ -546,7 +548,7 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
                                 }
                             }
                         }
-                    }
+                    } */
 
                     file = this.storeImage(bmp, file.getName());
                     al.add(Uri.fromFile(file).toString());
