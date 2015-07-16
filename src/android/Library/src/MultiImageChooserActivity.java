@@ -528,6 +528,8 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
                                 throw new IOException("Unable to load image into memory.");
                             }
                         }
+
+                        file = this.storeImage(bmp, file.getName());
                     }
                     // Don't do anything if we don't want to resize the image.
                     /* else {
@@ -550,7 +552,6 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
                         }
                     } */
 
-                    file = this.storeImage(bmp, file.getName());
                     al.add(Uri.fromFile(file).toString());
                 }
                 return al;
