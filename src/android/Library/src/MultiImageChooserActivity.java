@@ -659,7 +659,7 @@ public class MultiImageChooserActivity extends Activity implements OnItemClickLi
 		}
 */
 
-		private File createTempFile(String fileName) {
+		private File createTempFile(String fileName) throws IOException {
 			int index = fileName.lastIndexOf('.');
 			String name = fileName.substring(0, index);
 			String ext = fileName.substring(index);
