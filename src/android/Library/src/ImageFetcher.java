@@ -20,6 +20,7 @@ import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,6 +59,12 @@ public class ImageFetcher {
     private int colWidth;
     private long origId;
     private ExecutorService executor;
+	private static Random random = new Random();
+	private static int[] defaultColors = new int[] {
+		Color.rgb(230, 0, 126),
+		Color.rgb(150, 193, 31),
+		Color.rgb(0, 159, 227)
+	};
 
     public ImageFetcher() {
         executor = Executors.newCachedThreadPool();
@@ -262,7 +269,7 @@ public class ImageFetcher {
         private long origId;
 
         public DownloadedDrawable(Context mContext, BitmapFetcherTask bitmapDownloaderTask, long origId) {
-            super(Color.TRANSPARENT);
+            super(defaultColors[random.nextInt(3)]);
             bitmapDownloaderTaskReference = new WeakReference<BitmapFetcherTask>(bitmapDownloaderTask);
             this.origId = origId;
         }
