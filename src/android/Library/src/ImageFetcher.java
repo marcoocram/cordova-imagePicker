@@ -184,7 +184,7 @@ public class ImageFetcher {
 	                return null;
 	            }
 	            Bitmap thumb = MediaStore.Images.Thumbnails.getThumbnail(mContext.getContentResolver(), position, 12345,
-	                    MediaStore.Images.Thumbnails.MINI_KIND, null);
+	                    MediaStore.Images.Thumbnails.MICRO_KIND, null);
 	            if (isCancelled()) {
 	                return null;
 	            }
